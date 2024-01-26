@@ -11,8 +11,8 @@ void webpage(WiFiClient client){
     client.println(""); 
   
     client.println("<!DOCTYPE html>");
-    client.println("<html lang=\"en\">");
-    client.println("<head>");
+  client.println("<html lang=\"en\">");
+  client.println("<head>");
     client.println("<meta charset=\"UTF-8\">");
     client.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
     
@@ -23,7 +23,7 @@ void webpage(WiFiClient client){
             client.println("display: flex;");
             client.println("flex-direction: column;");
             client.println("align-items: center;");
-            client.println("justi\fy-content: center;");
+            client.println("justify-content: center;");
             client.println("min-height: 100vh;");
             client.println("margin: 0;");
         client.println("}");
@@ -33,19 +33,19 @@ void webpage(WiFiClient client){
         client.println("}");
 
         client.println("#gamepad {");
-           client.println(" margin-top: 20px; /* Adjust the margin as needed */");
+            client.println("margin-top: 20px;");
         client.println("}");
 
         client.println("#gamepad a {");
             client.println("margin: 5px;");
             client.println("padding: 10px;");
-            client.println("text-decoration: none;");
             client.println("color: #000;");
             client.println("border: 1px solid #000;");
         client.println("}");
 
+        
         client.println("a {");
-            client.println("text-decoration: none; /* Remove underline from button text */");
+            client.println("text-decoration: none;");
         client.println("}");
     client.println("</style>");
     
@@ -53,15 +53,18 @@ void webpage(WiFiClient client){
   client.println("<body>");
     client.println("<div>");
         client.println("<h1>Modes</h1>");
-        client.println("<a href=\"/1\"> <button>Gamepad</button> </a>");
-        client.println("<a href=\"/2\"> <button>Hand Following</button> </a>");
-        client.println("<a href=\"/3\"> <button>Collision Avoidance</button> </a>");
+        client.println("<a href=\"/mode1\"> <button>Gamepad</button> </a>");
+        client.println("<a href=\"/mode2\"> <button>Hand Following</button> </a>");
+        client.println("<a href=\"/mode3\"> <button>Collision Avoidance</button> </a>");
     client.println("</div>");
     client.println("<div id=\"gamepad\">");
-        client.println("<a href=\"/up\">▲</a>");
-        client.println("<a href=\"/left\">◄</a>");
-        client.println("<a href=\"/right\">►</a>");
-        client.println("<a href=\"/down\">▼</a>");
+            client.println("<a href=\"/up\">▲</a>");
+            client.println("<div style=\"margin: 30px;\">");
+                client.println("<a href=\"/left\">◄</a>");
+                client.println("<a href=\"/stop\">◯</a>");
+                client.println("<a href=\"/right\">►</a>");
+            client.println("</div>            ");
+            client.println("<a href=\"/down\">▼</a>");
     client.println("</div>");
   client.println("</body>");
   client.println("</html>");
@@ -105,29 +108,41 @@ void loop() {
     String request = client.readStringUntil('\n');
     client.flush();
     Serial.println(request);
-    if (request.indexOf("ledon") != -1)
-    { digitalWrite(D1, HIGH);
-      Serial.println("LED is ON");
-    }
 
-    if (request.indexOf("ledoff") != -1)
-    { digitalWrite(D1, LOW);
-      Serial.println("LED is OFF");
-    }
-
-    if (request.indexOf("1") != -1)
+    if (request.indexOf("mode1") != -1)
     { 
-      Serial.println("Mode 1");
+      Serial.println("lol");
     }
 
-    if (request.indexOf("2") != -1)
+    if (request.indexOf("mode2") != -1)
     { 
       Serial.println("Mode 2");
     }
 
-    if (request.indexOf("3") != -1)
+    if (request.indexOf("mode3") != -1)
     { 
       Serial.println("Mode 3");
+    }
+
+    if (request.indexOf("up") != -1)
+    { 
+      Serial.println("Up");
+    }
+    if (request.indexOf("left") != -1)
+    { 
+      Serial.println("Left");
+    }
+    if (request.indexOf("right") != -1)
+    { 
+      Serial.println("right");
+    }
+    if (request.indexOf("down") != -1)
+    { 
+      Serial.println("down");
+    }
+    if (request.indexOf("stop") != -1)
+    { 
+      Serial.println("stop");
     }
 
  
