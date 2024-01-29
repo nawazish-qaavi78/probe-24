@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+  <html lang=en>
+  <head>
+    <meta charset=\"UTF-8\">
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+    
+    <title>IoT</title>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        div {
+            text-align: center;
+        }
+
+        #gamepad {
+            margin-top: 20px;
+        }
+
+        #gamepad a {
+            margin: 5px;
+            padding: 10px;
+            color: #000;
+            border: 1px solid #000;
+        }
+
+        
+        a {
+            text-decoration: none;
+        }
+    </style>
+    
+  </head>
+  <body>
+    <div>
+        <h1>Modes</h1>
+        <a href=/1> <button>Gamepad</button> </a>
+        <a href=/2> <button>Hand Following</button> </a>
+        <a href=/3> <button>Collision Avoidance</button> </a>
+    </div>
+    <div id=gamepad>
+            <a href=/up>▲</a>
+            <div style="margin: 30px;">
+                <a href=/left>◄</a>
+                <a href="/stop">◯</a>
+                <a href=/right>►</a>
+            </div>            
+            <a href=/down>▼</a>
+    </div>
+  </body>
+  </html>
