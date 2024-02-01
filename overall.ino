@@ -15,12 +15,12 @@ int msp=255;
 int trig=2;
 int echo=4;
 int speed=3;
-int dir1= 7; //left motor (YELLOW WIRES) //assuming clockwise
-int dir2= 8;
+int dir1= 16; //left motor (YELLOW WIRES) //assuming clockwise
+int dir2= 5;
 int d1= 12; //right motor (RED WIRES)
 int d2= 13;
-int leftir=9;
-int rightir=10;
+int leftir=0;
+int rightir=14;
 int rightdis=0, leftdis=0, middis=0;
 
 void webpage(WiFiClient client){
@@ -176,15 +176,22 @@ void readInput(String request){
 }
 
 void handFollow(){
-  int leftSensor = digitalRead(leftir); // Read sensor values directly
+  int leftSensor = digitalRead(leftir);  // Read sensor values directly
   int rightSensor = digitalRead(rightir);
   if (leftSensor == LOW && rightSensor == HIGH) {
     leftturn();
-  }
-  else if (leftSensor == HIGH && rightSensor == LOW) {
+  } else if (leftSensor == HIGH && rightSensor == LOW) {
     rightturn();
-  }
-  else{
+  } else if (leftSensor == LOW && rightSensor == LOW) {
+    int action = distance();
+    if (action >= 15) {
+      forward();
+    } else if (action <= 10) {
+      backward();
+    } else {
+      stop();
+    }
+  } else {
     stop();
   }
 }
@@ -247,19 +254,10 @@ void move(){
 }
 
 void setup() {
-  pinMode(D1, OUTPUT);
-  pinMode(trig, OUTPUT);
-  pinMode(echo, INPUT);
-  pinMode(dir1, OUTPUT);
-  pinMode(dir2, OUTPUT);
-  pinMode(d1, OUTPUT);
-  pinMode(d2, OUTPUT);
-  pinMode(speed,OUTPUT); //l293d driver had only one common enable pin
-  pinMode(leftir, OUTPUT);
-  pinMode(rightir, OUTPUT);
+ 
   
   Serial.begin(115200);
-  servo.attach(5);
+  
   
   while(!Serial);
 
@@ -280,6 +278,16 @@ void setup() {
   Serial.println(WiFi.localIP());
   server.begin();
   delay(3000);
+  pinMode(d1, OUTPUT);
+  pinMode(trig, OUTPUT);
+  pinMode(echo, INPUT);
+  pinMode(dir1, OUTPUT);
+  pinMode(dir2, OUTPUT);
+  pinMode(d2, OUTPUT);
+  pinMode(speed,OUTPUT); //l293d driver had only one common enable pin
+  pinMode(leftir, OUTPUT);
+  pinMode(rightir, OUTPUT);
+  servo.attach(5);
 }
 
 void loop() {
