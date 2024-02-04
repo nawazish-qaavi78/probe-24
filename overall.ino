@@ -158,6 +158,8 @@ void readInput(String request){
 
   if (request.indexOf("stop") != -1){ 
     inputDirection=0;
+  } else {
+    
   }
 
   if (request.indexOf("mode1") != -1){ 
@@ -308,7 +310,7 @@ void loop() {
   WiFiClient client;
   client = server.available();
 
-
+// make sure that the bot stops for other modes as well
   switch(mode){
     case 1:
       move();
@@ -325,12 +327,11 @@ void loop() {
       break;
   }
 
-  
+  // write an interrupt for client  
 
  if (client == 1) {
     String request = client.readStringUntil('\n');
     client.flush();
-    Serial.println(request);
     readInput(request);
 
     switch(mode){
