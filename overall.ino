@@ -11,16 +11,22 @@ Servo servo;
 int mode=1; // mode1 is gamepad, 2 is hand following, 3 is collision avoidance
 int inputDirection = 0; // 0 is for stop, 1 is for forward, 2 is for back, 3 is for left, 4 is for right
 
-int msp=255;
-int trig=2;
-int echo=4;
-int speed=3;
-int dir1= 16; //left motor (YELLOW WIRES) //assuming clockwise
-int dir2= 5;
-int d1= 12; //right motor (RED WIRES)
-int d2= 13;
-int leftir=0;
-int rightir=14;
+int speed=16; //D0
+int speed2 = 5; //D1
+
+int in1= 4; //D2  //left motor (YELLOW WIRES) //assuming clockwise
+int in2= 0; // D3
+
+int in3= 2; //D4 //right motor (RED WIRES)
+int in4= 14; // D5
+
+int trig=12; //D6
+int echo=13; //D7
+
+// CHECK 
+int leftir=9;
+int rightir=10;
+
 int rightdis=0, leftdis=0, middis=0;
 
 void webpage(WiFiClient client){
@@ -89,44 +95,49 @@ void webpage(WiFiClient client){
 }
 
 void forward(){
-  analogWrite(speed,msp);
-  digitalWrite(dir1,HIGH);
-  digitalWrite(d1,HIGH);
-  digitalWrite(dir2,LOW);
-  digitalWrite(d2,LOW);
+  digitalWrite(speed,HIGH);
+  digitalWrite(speed2,HIGH);
+  digitalWrite(in1,HIGH);
+  digitalWrite(in3,HIGH);
+  digitalWrite(in2,LOW);
+  digitalWrite(in4,LOW);
   Serial.println("FORWARD");
 }
 
 void backward(){
-  analogWrite(speed,msp);
-  digitalWrite(dir2,HIGH);
-  digitalWrite(d2,HIGH);
-  digitalWrite(dir1,LOW);
-  digitalWrite(d1,LOW);
+  digitalWrite(speed,HIGH);
+  digitalWrite(speed2,HIGH);
+  digitalWrite(in2,HIGH);
+  digitalWrite(in4,HIGH);
+  digitalWrite(in1,LOW);
+  digitalWrite(in3,LOW);
   Serial.println("BACKWARD");
 }
 
 void rightturn(){
-  analogWrite(speed,msp);
-  digitalWrite(dir1,LOW);
-  digitalWrite(d1,HIGH);
-  digitalWrite(dir2,HIGH);
-  digitalWrite(d2,LOW);
+  digitalWrite(speed,HIGH);
+  digitalWrite(speed2,HIGH);
+  digitalWrite(in1,LOW);
+  digitalWrite(in3,HIGH);
+  digitalWrite(in2,HIGH);
+  digitalWrite(in4,LOW);
   Serial.println("RIGHT");
 }
 
 void leftturn(){
-  analogWrite(speed,msp);
-  digitalWrite(dir1,HIGH);
-  digitalWrite(d1,LOW);
-  digitalWrite(dir2,LOW);
-  digitalWrite(d2,HIGH);
+  digitalWrite(speed,HIGH);
+  digitalWrite(speed2,HIGH);
+  digitalWrite(in1,HIGH);
+  digitalWrite(in3,LOW);
+  digitalWrite(in2,LOW);
+  digitalWrite(in4,HIGH);
   Serial.println("LEFT");
 }
 
 void stop(){
   digitalWrite(speed, LOW);
-  Serial.println("STOP");
+  digitalWrite(speed2,LOW);
+  // Serial.println("STOP");
 }
 
 int distance(){
@@ -176,13 +187,14 @@ void readInput(String request){
 }
 
 void handFollow(){
+  Serial.println("Handfollow");
   int leftSensor = digitalRead(leftir);  // Read sensor values directly
   int rightSensor = digitalRead(rightir);
-  if (leftSensor == LOW && rightSensor == HIGH) {
+  if (leftSensor == HIGH && rightSensor == LOW) {
     leftturn();
-  } else if (leftSensor == HIGH && rightSensor == LOW) {
+  } else if (leftSensor == LOW && rightSensor == HIGH) {
     rightturn();
-  } else if (leftSensor == LOW && rightSensor == LOW) {
+  } else if (leftSensor == HIGH && rightSensor == HIGH) {
     int action = distance();
     if (action >= 15) {
       forward();
@@ -197,6 +209,7 @@ void handFollow(){
 }
 
 void collisonAvoidance(){
+  Serial.println("collisonAvoidance");
   servo.write(90);
   delay(500);
   middis=distance();
@@ -278,21 +291,41 @@ void setup() {
   Serial.println(WiFi.localIP());
   server.begin();
   delay(3000);
-  pinMode(d1, OUTPUT);
+  pinMode(in3, OUTPUT);
   pinMode(trig, OUTPUT);
   pinMode(echo, INPUT);
-  pinMode(dir1, OUTPUT);
-  pinMode(dir2, OUTPUT);
-  pinMode(d2, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in4, OUTPUT);
   pinMode(speed,OUTPUT); //l293d driver had only one common enable pin
-  pinMode(leftir, OUTPUT);
-  pinMode(rightir, OUTPUT);
+  pinMode(speed2, OUTPUT);
+  pinMode(leftir, INPUT);
+  pinMode(rightir, INPUT);
   servo.attach(5);
 }
 
 void loop() {
   WiFiClient client;
   client = server.available();
+
+
+  switch(mode){
+    case 1:
+      move();
+      break;
+    case 2: 
+      handFollow();
+      break;
+    case 3:
+      collisonAvoidance();
+      break;
+    default:
+      inputDirection=0;
+      stop();
+      break;
+  }
+
+  
 
  if (client == 1) {
     String request = client.readStringUntil('\n');
@@ -305,7 +338,7 @@ void loop() {
         move();
         break;
       case 2: 
-        handFollow();
+        // handFollow();
         break;
       case 3:
         collisonAvoidance();
