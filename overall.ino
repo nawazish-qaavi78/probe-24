@@ -14,18 +14,20 @@ int inputDirection = 0; // 0 is for stop, 1 is for forward, 2 is for back, 3 is 
 int speed=16; //D0
 int speed2 = 5; //D1
 
-int in1= 4; //D2  //left motor (YELLOW WIRES) //assuming clockwise
+int in1= 4; //D2  
 int in2= 0; // D3
 
-int in3= 2; //D4 //right motor (RED WIRES)
-int in4= 14; // D5
+int in3= 14; //D8 
+int in4= 15; // D5
 
 int trig=12; //D6
 int echo=13; //D7
 
+int servo_pin = 2; // D4
+
 // CHECK 
-int leftir=9;
-int rightir=10;
+int leftir=3; // rx
+int rightir=A0; // 
 
 int rightdis=0, leftdis=0, middis=0;
 
@@ -192,11 +194,11 @@ void handFollow(){
   Serial.println("Handfollow");
   int leftSensor = digitalRead(leftir);  // Read sensor values directly
   int rightSensor = digitalRead(rightir);
-  if (leftSensor == HIGH && rightSensor == LOW) {
+  if (leftSensor == LOW  && rightSensor == HIGH) {
     leftturn();
-  } else if (leftSensor == LOW && rightSensor == HIGH) {
+  } else if (leftSensor == HIGH && rightSensor == LOW) {
     rightturn();
-  } else if (leftSensor == HIGH && rightSensor == HIGH) {
+  } else if (leftSensor == LOW && rightSensor == LOW) {
     int action = distance();
     if (action >= 15) {
       forward();
@@ -303,7 +305,8 @@ void setup() {
   pinMode(speed2, OUTPUT);
   pinMode(leftir, INPUT);
   pinMode(rightir, INPUT);
-  servo.attach(5);
+  servo.attach(servo_pin,600,2400);
+  // servo.write(0);
 }
 
 void loop() {
@@ -339,7 +342,7 @@ void loop() {
         move();
         break;
       case 2: 
-        // handFollow();
+        handFollow();
         break;
       case 3:
         collisonAvoidance();
