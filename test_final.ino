@@ -271,18 +271,34 @@ void move(){
 }
 
 void setup() {
-  #ifdef DISABLE_SERIAL
-  Serial.end(); // Disable serial communication to release the TX pin
-  #endif
+  // uncomment once you get the ip address
+  // #ifdef DISABLE_SERIAL
+  // Serial.end(); // Disable serial communication to release the TX pin
+  // #endif
+ 
+  Serial.begin(115200);
+  
+  
+  while(!Serial);
 
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
+    Serial.print(".");
   }
 
+  Serial.println("");
+  Serial.println("NodeMCU is connected to WiFi");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
   
   server.begin();
   delay(3000);
