@@ -28,8 +28,8 @@ int echo=13; //D7
 int servo_pin = 2; // D4
 
 // CHECK 
-int leftir=1; // rx
-int rightir=3; // 
+int leftir=1; // tx
+int rightir=3; // rx
 
 int rightdis=0, leftdis=0, middis=0;
 
@@ -271,34 +271,34 @@ void move(){
 }
 
 void setup() {
-  // uncomment once you get the ip address
-  // #ifdef DISABLE_SERIAL
-  // Serial.end(); // Disable serial communication to release the TX pin
-  // #endif
+  // comment for ip address
+  #ifdef DISABLE_SERIAL
+  Serial.end(); // Disable serial communication to release the TX pin
+  #endif
  
-  Serial.begin(115200);
+  // Serial.begin(115200);
   
   
-  while(!Serial);
+  // while(!Serial);
 
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+  // Serial.print("Connecting to ");
+  // Serial.println(ssid);
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  // WiFi.mode(WIFI_STA);
+  // WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
+  // while (WiFi.status() != WL_CONNECTED) {
+  //   delay(500);
+  //   Serial.print(".");
+  // }
 
-  Serial.println("");
-  Serial.println("NodeMCU is connected to WiFi");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+  // Serial.println("");
+  // Serial.println("NodeMCU is connected to WiFi");
+  // Serial.print("IP address: ");
+  // Serial.println(WiFi.localIP());
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  // WiFi.mode(WIFI_STA);
+  // WiFi.begin(ssid, password);
   
   server.begin();
   delay(3000);
@@ -320,7 +320,6 @@ void loop() {
   WiFiClient client;
   client = server.available();
 
-// make sure that the bot stops for other modes as well
   switch(mode){
     case 1:
       move();
@@ -335,9 +334,7 @@ void loop() {
       inputDirection=0;
       stop();
       break;
-  }
-
-  // write an interrupt for client  
+  } 
 
  if (client == 1) {
     String request = client.readStringUntil('\n');
