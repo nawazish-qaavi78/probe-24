@@ -217,28 +217,32 @@ void collisonAvoidance(){
   servo.write(90);
   delay(500);
   middis=distance();
-  if(middis <=15){
+  if(middis <=10){
     stop();
     delay(500);
-    servo.write(10);
-    delay(500);
-    leftdis=distance();
-    delay(250);
-    servo.write(180);
+    servo.write(30);
     delay(500);
     rightdis=distance();
     delay(250);
+    servo.write(150);
+    delay(500);
+    leftdis=distance();
+    delay(250);
     servo.write(90);
-    delay(1000);
-    if(rightdis > leftdis){
-      rightturn();
-      delay(250);
+    delay(100);
+    if((rightdis>10) || (leftdis>10)){
+      if(rightdis > leftdis){
+        rightturn();
+        delay(250);
+      }
+      if(leftdis > rightdis){
+        
+        leftturn();
+        delay(250);
+      }
     }
-    else if(leftdis > rightdis){
-      leftturn();
-      delay(250);
-    }
-    else if((rightdis <=15) || (leftdis <=15)){
+    if((rightdis <=10) && (leftdis <=10)){
+      
       backward();
       }
   }
